@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VR Superhero Gallery</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+<script>
+
+  // SHOW TEXT + MODEL + AUDIO COMPONENT
+ 
+  AFRAME.registerComponent('show-text-and-model', {
+    schema: {
+      message: { type: 'string' },
+      model: { type: 'selector' }
+    },
+
+    init: function () {
+      this.el.addEventListener('click', () => {
+
+        document.querySelector('#infoText')
+          .setAttribute('value', this.data.message);
+
+        document.querySelectorAll('.superhero-model')
+          .forEach(m => m.setAttribute('visible', false));
+
+        if (this.data.model) {
+          this.data.model.setAttribute('visible', true);
+        }
+
+        const sounds = [
+          'supermanSound',
+          'batmanSound',
+          'flashSound',
+          'greenlanternSound',
+          'aquamanSound',
+          'cyborgSound',
+          'shazamSound'
+        ];
+
+        sounds.forEach(id => {
+          const soundEl = document.querySelector('#' + id);
+          if (soundEl &&
+              soundEl.components.sound &&
+              soundEl.components.sound.isPlaying) {
+            soundEl.components.sound.stopSound();
+          }
+        });
+
+        if (this.data.model) {
+          const modelId = this.data.model.id;
+          const soundId = modelId.replace('3D', 'Sound');
+          const soundEl = document.querySelector('#' + soundId);
+
+          if (soundEl && soundEl.components.sound) {
+            soundEl.components.sound.playSound();
+          }
+        }
+      });
+    }
+  });
+
+  // THUMBSTICK ROTATION (BOTH CONTROLLERS)
+
+  AFRAME.registerComponent('thumbstick-turn', {
+    schema: { speed: { type: 'number', default: 2 } },
+
+    init: function () {
+      this.el.addEventListener('thumbstickmoved', (evt) => {
+
+        const x = evt.detail.x;
+
+        if (Math.abs(x) > 0.2) {
+
+          const rig = document.querySelector('#rig');
+          if (!rig) return;
+
+          const rotation = rig.getAttribute('rotation');
+          rotation.y -= x * this.data.speed;
+
+          rig.setAttribute('rotation', rotation);
+        }
+      });
+    }
+  });
+
+</script>
+
+</head>
+
+<body>
+<a-scene background="color: #f2f2f2" cursor="rayOrigin: mouse">
+
+  <a-sky color="#f2f2f2"></a-sky>
+
+  <a-assets>
+
+    <img id="superman" src="images/superman.jpg">
+    <img id="batman" src="images/batman.jpg">
+    <img id="flash" src="images/flash.jpg">
+    <img id="greenlantern" src="images/greenlantern.jpg">
+    <img id="aquaman" src="images/aquaman.jpg">
+    <img id="cyborg" src="images/cyborg.jpg">
+    <img id="shazam" src="images/shazam.jpg">
+
+    <a-asset-item id="supermanModel" src="models/superman.glb"></a-asset-item>
+    <a-asset-item id="batmanModel" src="models/batman.glb"></a-asset-item>
+    <a-asset-item id="flashModel" src="models/flash.glb"></a-asset-item>
+    <a-asset-item id="greenlanternModel" src="models/greenlantern.glb"></a-asset-item>
+    <a-asset-item id="aquamanModel" src="models/aquaman-compressed.glb"></a-asset-item>
+    <a-asset-item id="cyborgModel" src="models/cyborg.glb"></a-asset-item>
+    <a-asset-item id="shazamModel" src="models/shazam.glb"></a-asset-item>
+
+    <audio id="supermanAudio" src="audios/superman.mp3"></audio>
+    <audio id="batmanAudio" src="audios/batman.mp3"></audio>
+    <audio id="flashAudio" src="audios/flash.mp3"></audio>
+    <audio id="greenlanternAudio" src="audios/green_lantern.mp3"></audio>
+    <audio id="aquamanAudio" src="audios/aquaman.mp3"></audio>
+    <audio id="cyborgAudio" src="audios/cyborg.mp3"></audio>
+    <audio id="shazamAudio" src="audios/shazam.mp3"></audio>
+
+  </a-assets>
+
+<a-entity id="rig"
+          position="0 0 3"
+          wasd-controls>
+
+    <!-- CAMERA -->
+    <a-entity camera
+              look-controls
+              position="0 1.6 0">
+    </a-entity>
+
+    <!-- LEFT CONTROLLER -->
+    <a-entity laser-controls="hand: left"
+              position="-0.3 1.4 -0.5"
+              raycaster="objects: .clickable"
+              thumbstick-turn>
+    </a-entity>
+
+    <!-- RIGHT CONTROLLER -->
+    <a-entity laser-controls="hand: right"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+              position="0.3 1.4 -0.5"
+              raycaster="objects: .clickable"
+              thumbstick-turn>
+    </a-entity>
+
+</a-entity>
+
+  <a-entity light="type: ambient; intensity: 0.6"></a-entity>
+  <a-entity light="type: directional; intensity: 0.8" position="0 5 5"></a-entity>
+
+  <a-plane position="0 -1 0" rotation="-90 0 0" width="14" height="14" color="#8F9B78"></a-plane>
+
+  <a-plane position="0 2 -7" width="14" height="6" color="#FFA4A4"></a-plane>
+
+  <a-plane position="-7 2 0" rotation="0 90 0" width="14" height="6" color="#FFBDBD"></a-plane>
+  <a-plane position="7 2 0" rotation="0 -90 0" width="14" height="6" color="#FFBDBD"></a-plane>
+
+  <a-plane position="0 2 7" rotation="0 180 0"
+         width="14" height="6" color="#FFD6D6"></a-plane>
+
+  <a-plane position="0 5 0" rotation="90 0 0"
+         width="14" height="14" color="#FFF5F5"></a-plane>
+
+  <a-text id="infoText"
+        value="Click a superhero image"
+        position="0 4 -6.9"
+        rotation="0 0 0"
+        align="center"
+        width="15"
+        color="#8A3324">
+  </a-text>
+
+  <!-- MODELS -->
+  <a-entity id="superman3D" class="superhero-model"
+            gltf-model="#supermanModel"
+            position="0 0 2"
+            scale="1 1 1"
+            visible="false"
+            animation-mixer
+            animation="property: position; dir: alternate; dur: 2000; loop: true; to: 0 0.3 2"
+            animation__rotate="property: rotation; dur: 12000; loop: true; to: 0 360 0">
+  </a-entity>
+
+  <a-entity id="batman3D" class="superhero-model"
+          gltf-model="#batmanModel"
+          position="0 0 2"
+          scale="1 1 1"
+          visible="false"
+          animation-mixer
+          animation="property: rotation; dur: 25000; loop: true; to: 0 360 0">
+</a-entity>
+
+<a-entity id="flash3D" class="superhero-model"
+          gltf-model="#flashModel"
+          position="0 0 2"
+          scale="0.6 0.6 0.6"
+          visible="false"
+          animation-mixer
+          animation__run="property: position; dir: alternate; dur: 800; loop: true; to: 0 0 1.2">
+</a-entity>
+
+<a-entity id="greenlantern3D" class="superhero-model"
+          gltf-model="#greenlanternModel"
+          position="0 0 2"
+          scale="1 1 1"
+          visible="false"
+          animation-mixer
+          animation="property: position; dir: alternate; dur: 3000; loop: true; to: 0 0.2 2"
+          animation__rotate="property: rotation; dur: 15000; loop: true; to: 0 360 0">
+</a-entity>
+
+<a-entity id="aquaman3D" class="superhero-model"
+          gltf-model="#aquamanModel"
+          position="0 0 2"
+          scale="0.8 0.8 0.8"
+          visible="false"
+          rotation="0 -45 0"
+          animation-mixer
+          animation="property: position; dir: alternate; dur: 3500; loop: true; to: 0 0.25 2">
+</a-entity>
+
+<a-entity id="cyborg3D" class="superhero-model"
+          gltf-model="#cyborgModel"
+          position="0 0 2"
+          scale="0.009 0.009 0.009"
+          visible="false"
+          animation-mixer
+          animation="property: rotation; dur: 20000; loop: true; to: 0 360 0">
+</a-entity>
+
+<a-entity id="shazam3D" class="superhero-model"
+          gltf-model="#shazamModel"
+          position="0 0 2"
+          scale="0.010 0.010 0.010"
+          visible="false"
+          animation-mixer
+          animation="property: position; dir: alternate; dur: 2500; loop: true; to: 0 0.25 2">
+</a-entity>
+
+  <!--AUDIO-->
+  <a-entity id="supermanSound" sound="src: #supermanAudio"></a-entity>
+  <a-entity id="batmanSound" sound="src: #batmanAudio"></a-entity>
+  <a-entity id="flashSound" sound="src: #flashAudio"></a-entity>
+  <a-entity id="greenlanternSound" sound="src: #greenlanternAudio"></a-entity>
+  <a-entity id="aquamanSound" sound="src: #aquamanAudio"></a-entity>
+  <a-entity id="cyborgSound" sound="src: #cyborgAudio"></a-entity>
+  <a-entity id="shazamSound" sound="src: #shazamAudio"></a-entity>
+
+  <!-- CLICKABLE IMAGE PLANES -->
+  <a-plane class="clickable" src="#superman" position="-3 1.6 -6.95" width="1.8" height="1.8"
+           show-text-and-model="message: Superman – Man of Steel; model: #superman3D"></a-plane>
+
+  <a-plane class="clickable" src="#batman" position="0 1.6 -6.95" width="1.8" height="1.8"
+           show-text-and-model="message: Batman – The Dark Knight; model: #batman3D"></a-plane>
+
+  <a-plane class="clickable" src="#flash" position="3 1.6 -6.95" width="1.8" height="1.8"
+           show-text-and-model="message: The Flash – Fastest Man Alive; model: #flash3D"></a-plane>
+
+  <a-plane class="clickable" src="#greenlantern" position="-6.8 1.8 -1.5" rotation="0 90 0"
+           width="1.8" height="1.8"
+           show-text-and-model="message: Green Lantern – Power of Will; model: #greenlantern3D"></a-plane>
+
+  <a-plane class="clickable" src="#aquaman" position="-6.8 1.8 1.5" rotation="0 90 0"
+           width="1.8" height="1.8"
+           show-text-and-model="message: Aquaman – King of Atlantis; model: #aquaman3D"></a-plane>
+
+  <a-plane class="clickable" src="#cyborg" position="6.8 1.8 -1.5" rotation="0 -90 0"
+           width="1.8" height="1.8"
+           show-text-and-model="message: Cyborg – Half Man, Half Machine; model: #cyborg3D"></a-plane>
+
+  <a-plane class="clickable" src="#shazam" position="6.8 1.8 1.5" rotation="0 -90 0"
+           width="1.8" height="1.8"
+           show-text-and-model="message: Shazam – Magic of the Gods; model: #shazam3D"></a-plane>
+
+</a-scene>
+</body>
+</html>
